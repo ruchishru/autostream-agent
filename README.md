@@ -1,16 +1,15 @@
 # 🎬 AutoStream AI Sales Agent
 
-A conversational AI agent for **AutoStream** — a fictional SaaS video editing platform — built as part of the **ServiceHive / Inflx Machine Learning Intern Assignment**.
+A conversational AI agent for **AutoStream**, a fictional SaaS video editing platform, built as part of the **ServiceHive / Inflx Machine Learning Intern Assignment**.
 
-The agent handles intent detection, RAG-powered product Q&A, and lead capture using **LangGraph** + **Groq (Llama 3.3 70B)** — completely free, no credit card required.
-
+The agent handles intent detection, RAG-powered product Q&A, and lead capture using **LangGraph** + **Groq (Llama 3.3 70B)**.
 ---
 
 ## 🚀 How to Run Locally
 
 ### Prerequisites
 - Python 3.9+
-- A free [Groq API key](https://console.groq.com) (sign up with Google, no credit card needed)
+- A free [Groq API key](https://console.groq.com)
 
 ### 1. Clone the Repository
 
@@ -75,11 +74,11 @@ You should see a `✅ Lead captured successfully!` message after the last step.
 
 ### Why LangGraph?
 
-LangGraph was chosen over AutoGen because it provides an explicit, inspectable state machine — ideal for a multi-step lead qualification workflow where precise control over transitions (greeting → inquiry → lead collection → tool execution) is critical. AutoGen excels at multi-agent debates and collaboration; LangGraph is purpose-built for single-agent workflows with deterministic branching logic and stateful memory, making it the right fit here.
+LangGraph was chosen over AutoGen because it provides an explicit, inspectable state machine ,ideal for a multi-step lead qualification workflow where precise control over transitions (greeting → inquiry → lead collection → tool execution) is critical. AutoGen excels at multi-agent debates and collaboration, LangGraph is purpose-built for single-agent workflows with deterministic branching logic and stateful memory, making it the right fit here.
 
 ### How State is Managed
 
-The agent uses a `TypedDict`-based `AgentState` that persists across all conversation turns within a session. LangGraph's `add_messages` annotation accumulates the full conversation history, giving the LLM complete context on every invocation. Custom state fields — `intent`, `collecting_lead`, `collection_step`, `lead_name`, `lead_email`, `lead_platform`, and `lead_captured` — act as a lightweight state machine. On every turn, the graph checks these fields to decide whether to answer a product question, advance lead collection, or fire the mock lead capture tool. This design prevents premature tool calls: the tool only triggers after all three required values (name, email, platform) are collected and validated sequentially.
+The agent uses a `TypedDict`-based `AgentState` that persists across all conversation turns within a session. LangGraph's `add_messages` annotation accumulates the full conversation history, giving the LLM complete context on every invocation. Custom state fields : `intent`, `collecting_lead`, `collection_step`, `lead_name`, `lead_email`, `lead_platform`, and `lead_captured` , act as a lightweight state machine. On every turn, the graph checks these fields to decide whether to answer a product question, advance lead collection, or fire the mock lead capture tool. This design prevents premature tool calls: the tool only triggers after all three required values (name, email, platform) are collected and validated sequentially.
 
 ### RAG Pipeline
 
@@ -134,7 +133,7 @@ async def verify(request: Request):
 Use a dictionary keyed by `sender_id` (phone number) for development. For production, store sessions in **Redis** with a TTL to handle concurrent users and server restarts.
 
 **4. Deploy**
-Host on [Railway](https://railway.app), [Render](https://render.com), or any platform that provides a public HTTPS URL — required by Meta for webhook verification.
+Host on [Railway](https://railway.app), [Render](https://render.com), or any platform that provides a public HTTPS URL , required by Meta for webhook verification.
 
 **5. Register Webhook**
 In the Meta Developer portal, register your `/webhook` URL and subscribe to the `messages` event.
@@ -170,21 +169,8 @@ autostream-agent/
 
 ---
 
-## ✅ Evaluation Checklist
-
-- ✅ Intent detection — greeting / inquiry / high_intent
-- ✅ RAG from local knowledge base (pricing, features, policies)
-- ✅ State management across 5–6 conversation turns
-- ✅ Sequential lead collection — name → email → platform
-- ✅ Tool fires **only** after all 3 values are collected and validated
-- ✅ Free LLM — no credit card required (Groq free tier)
-- ✅ Clean, modular code structure
-- ✅ WhatsApp deployment plan documented
-
----
-
 ## 📝 Notes
 
-- The `.env` file is excluded from git via `.gitignore` — never commit API keys
-- The `mock_lead_capture()` function prints to terminal; in production this would POST to a CRM API (HubSpot, Salesforce, etc.)
+- The `.env` file is excluded from git via `.gitignore` 
+- The `mock_lead_capture()` function prints to terminal.
 - Basic email validation is included (checks for `@` and `.`)
